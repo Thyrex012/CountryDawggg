@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+.liquid-background {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background:
+          radial-gradient(circle at 20% 25%, #d75cff55, transparent 18%),
+          radial-gradient(circle at 75% 20%, #8e26ff55, transparent 22%),
+          radial-gradient(circle at 65% 75%, #c026ff44, transparent 20%),
+          radial-gradient(circle at 15% 80%, #8e26ff44, transparent 18%),
+          radial-gradient(circle at 90% 70%, #d75cff33, transparent 15%),
+          #08040f;
+}
+
+.liquid-background > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Main moving blobs */
+.liquid-background::before,
+.liquid-background::after {
+  position: absolute;
+  z-index: 0;
+  content: "";
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(25px);
+  opacity: .8;
+}
+
+
+.liquid-background::before {
+  top: -20%;
+  left: -10%;
+  background: radial-gradient(circle, #d75cff, transparent 70%);
+  animation: liquid-drift 5s ease-in-out infinite alternate;
+}
+
+
+.liquid-background::after {
+  right: -10%;
+  bottom: -20%;
+  background: radial-gradient(circle, #8e26ff, transparent 70%);
+  animation: liquid-drift 7s ease-in-out infinite alternate-reverse;
+}
+
+
+/* Extra floating purple blob */
+.liquid-blob {
+  position: absolute;
+  z-index: 0;
+  width: 35%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c026ff, transparent 70%);
+  filter: blur(35px);
+  opacity: .7;
+
+  left: 35%;
+  top: 45%;
+
+  animation: liquid-drift 6s ease-in-out infinite alternate;
+}
+
+
+@keyframes liquid-drift {
+  0% {
+    transform: translate3d(-7%, 4%, 0) rotate(0deg) scale(1);
+    border-radius: 43% 57% 62% 38% / 47% 45% 55% 53%;
+  }
+
+  50% {
+    transform: translate3d(26%, -13%, 0) rotate(100deg) scale(1.25);
+    border-radius: 59% 41% 39% 61% / 38% 65% 35% 62%;
+  }
+
+  100% {
+    transform: translate3d(8%, 18%, 0) rotate(210deg) scale(.92);
+    border-radius: 35% 65% 56% 44% / 63% 37% 63% 37%;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-background::before,
+  .liquid-background::after,
+  .liquid-blob,
+  .future-marquee__track {
+    animation: none;
+  }
+}
+
+@keyframes spin-y {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-360deg);
+  }
+}
+
+.animate-spin-y {
+  animation: spin-y 3s linear infinite;
+  transform-style: preserve-3d;
+}
+
+
+.future-marquee {
+  overflow: hidden;
+  border-block: 1px solid;
+  background: red;
+  color: white;
+  white-space: nowrap;
+}
+
+
+.future-marquee__track {
+  display: flex;
+  width: max-content;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: future-scroll 24s linear infinite;
+}
+
+
+.future-marquee__track span {
+  padding: 0.85rem 0;
+}
+
+
+@keyframes future-scroll {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
