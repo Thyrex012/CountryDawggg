@@ -5,14 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jspecify.annotations.NullMarked;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +49,10 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role = Role.COSTUMER;
+    private Role role = Role.CUSTOMER;
 
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified = false;
-
-    @Column(nullable = false)
-    private boolean active = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -66,5 +70,50 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    // ---- UserDetails implementation ----
+
+    @NullMarked
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @NullMarked
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @NullMarked
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @NullMarked
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @NullMarked
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @NullMarked
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @NullMarked
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

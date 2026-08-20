@@ -3,13 +3,17 @@ package com.codewiththyrex.store.service;
 import com.codewiththyrex.store.entity.AuthProvider;
 import com.codewiththyrex.store.entity.User;
 import com.codewiththyrex.store.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -54,15 +58,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User loginLocalUser(String email, String rawPassword) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-        if (user.getPasswordHash() == null || !passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-        return user;
-    }
-
     private User buildLocalUser(String email, String rawPassword, String firstName, String lastName) {
         User user = new User();
         user.setEmail(email);
@@ -71,5 +66,15 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with the following email doesn't exist"));
+        return
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

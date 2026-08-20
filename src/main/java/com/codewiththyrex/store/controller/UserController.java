@@ -5,6 +5,8 @@ import com.codewiththyrex.store.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
@@ -42,6 +44,12 @@ public class UserController {
                 request.firstName(),
                 request.lastName()
         );
+    }
+
+    // GET /api/auth/users
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     // --- Request body shapes ---
