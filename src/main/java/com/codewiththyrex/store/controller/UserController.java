@@ -1,9 +1,16 @@
 package com.codewiththyrex.store.controller;
 
+import com.codewiththyrex.store.dto.AuthResponse;
 import com.codewiththyrex.store.entity.User;
+import com.codewiththyrex.store.security.JWTService;
 import com.codewiththyrex.store.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -12,9 +19,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     // POST /api/auth/register
@@ -31,8 +42,26 @@ public class UserController {
 
     // POST /api/auth/login
     @PostMapping("/login")
-    public User login(@RequestBody LoginRequest request) {
-        return userService.loginLocalUser(request.email(), request.password());
+    public AuthResponse login(@RequestBody LoginRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.email(), request.password())
+            );
+        } catch (BadCredentialsException | UsernameNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+        }
+
+        User user = (User) userService.loadUserByUsername(request.email());
+        String jwtToken = jwtService.generateToken(request.email());
+
+        return new AuthResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole().name(),
+                jwtToken
+        );
     }
 
     // POST /api/auth/google

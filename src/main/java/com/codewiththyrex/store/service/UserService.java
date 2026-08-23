@@ -3,6 +3,7 @@ package com.codewiththyrex.store.service;
 import com.codewiththyrex.store.entity.AuthProvider;
 import com.codewiththyrex.store.entity.User;
 import com.codewiththyrex.store.repository.UserRepository;
+import com.codewiththyrex.store.security.JWTService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +18,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -70,8 +71,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with the following email doesn't exist"));
-        return
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with the following email doesn't exist"));
     }
 
     public List<User> getAllUsers() {
