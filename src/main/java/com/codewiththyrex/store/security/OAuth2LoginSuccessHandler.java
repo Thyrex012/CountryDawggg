@@ -1,6 +1,7 @@
 package com.codewiththyrex.store.security;
 
 import com.codewiththyrex.store.entity.AuthProvider;
+import com.codewiththyrex.store.entity.Role;
 import com.codewiththyrex.store.entity.User;
 import com.codewiththyrex.store.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +60,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         user = userRepository.save(user);
         String token = jwtService.generateToken(user.getEmail());
         response.addHeader("Set-Cookie", authCookieService.createJwtCookie(token).toString());
-        response.sendRedirect("http://localhost:5173/");
+        String frontendPath = user.getRole() == Role.ADMIN ? "/admin" : "/";
+        response.sendRedirect("http://localhost:5173" + frontendPath);
     }
 }
