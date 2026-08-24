@@ -1,6 +1,8 @@
 package com.codewiththyrex.store.controller;
 
 import com.codewiththyrex.store.dto.AuthResponse;
+import com.codewiththyrex.store.dto.LoginRequest;
+import com.codewiththyrex.store.dto.RegisterRequest;
 import com.codewiththyrex.store.entity.User;
 import com.codewiththyrex.store.security.JWTService;
 import com.codewiththyrex.store.service.UserService;
@@ -66,8 +68,4 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-
-    public record RegisterRequest(String email, String password, String firstName, String lastName) {}
-
-    public record LoginRequest(String email, String password) {}
 }
