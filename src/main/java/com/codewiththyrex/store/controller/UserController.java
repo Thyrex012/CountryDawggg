@@ -28,7 +28,6 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    // POST /api/auth/register
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User register(@RequestBody RegisterRequest request) {
@@ -40,7 +39,6 @@ public class UserController {
         );
     }
 
-    // POST /api/auth/login
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         try {
@@ -64,28 +62,12 @@ public class UserController {
         );
     }
 
-    // POST /api/auth/google
-    @PostMapping("/google")
-    public User googleLogin(@RequestBody GoogleLoginRequest request) {
-        return userService.handleGoogleLogin(
-                request.googleId(),
-                request.email(),
-                request.firstName(),
-                request.lastName()
-        );
-    }
-
-    // GET /api/auth/users
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // --- Request body shapes ---
-
     public record RegisterRequest(String email, String password, String firstName, String lastName) {}
 
     public record LoginRequest(String email, String password) {}
-
-    public record GoogleLoginRequest(String googleId, String email, String firstName, String lastName) {}
 }
