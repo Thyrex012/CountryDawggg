@@ -6,6 +6,7 @@ import {useState} from "react";
 function SignupCard({onSwitch}){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [reEnterPassword, setReEnterPassword] = useState('')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [error, setError] = useState('')
@@ -21,6 +22,11 @@ function SignupCard({onSwitch}){
 
         if (!email.trim() || !password.trim()) {
             setError('Email and password are required.')
+            return
+        }
+
+        if (verifyPassword(password, reEnterPassword) === false){
+            setError('Password and Re-enter password needs to be the same')
             return
         }
 
@@ -45,6 +51,13 @@ function SignupCard({onSwitch}){
         } catch (err) {
             setError(err.message)
         }
+    }
+
+    function verifyPassword(password, reEnterPassword){
+        if (password !== reEnterPassword) {
+            return false
+        }
+        return true
     }
 
 
@@ -96,13 +109,22 @@ function SignupCard({onSwitch}){
             onChange={(event ) => setEmail(event.target.value)}
             required={true}
         />
-        <input className="text-left p-2 rounded-2xl w-full border-1 border-black"
-               type="password"
-               placeholder="Password"
-               value={password}
-               onChange={(event) => setPassword(event.target.value)}
-               required={true}
-        />
+        <div className="flex flex-row gap-6 w-full">
+            <input className="text-left p-2 rounded-2xl w-full border-1 border-black"
+                   type="password"
+                   placeholder="Password"
+                   value={password}
+                   onChange={(event) => setPassword(event.target.value)}
+                   required={true}
+            />
+            <input className="text-left p-2 rounded-2xl w-full border-1 border-black"
+                   type="password"
+                   placeholder="Please re-enter the password"
+                   value={reEnterPassword}
+                   onChange={(event) => setReEnterPassword(event.target.value)}
+                   required={true}
+            />
+        </div>
 
         {error && (
             <p className="text-red-500 text-sm w-full text-center -mt-2">{error}</p>
