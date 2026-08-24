@@ -51,21 +51,22 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser);
     }
 
-    public User registerLocalUser(String email, String rawPassword, String firstName, String lastName) {
+    public User registerLocalUser(String email, String rawPassword, String firstName, String lastName, String phoneNumber) {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("An account with this email already exists");
         }
-        User user = buildLocalUser(email, rawPassword, firstName, lastName);
+        User user = buildLocalUser(email, rawPassword, firstName, lastName, phoneNumber);
         return userRepository.save(user);
     }
 
-    private User buildLocalUser(String email, String rawPassword, String firstName, String lastName) {
+    private User buildLocalUser(String email, String rawPassword, String firstName, String lastName, String phoneNumber) {
         User user = new User();
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(rawPassword));
         user.setAuthProvider(AuthProvider.LOCAL);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setPhone(phoneNumber);
         return user;
     }
 

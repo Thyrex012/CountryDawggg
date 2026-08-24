@@ -43,7 +43,8 @@ public class UserController {
                 request.email(),
                 request.password(),
                 request.firstName(),
-                request.lastName()
+                request.lastName(),
+                request.phoneNumber()
         );
     }
 
