@@ -1,6 +1,7 @@
 package com.codewiththyrex.store.config;
 
 import com.codewiththyrex.store.security.JWTService;
+import com.codewiththyrex.store.security.AuthCookieService;
 import com.codewiththyrex.store.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 
@@ -29,12 +31,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
+        var tokenCookie = WebUtils.getCookie(request, AuthCookieService.COOKIE_NAME);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7);
+        if (tokenCookie != null) {
+            token = tokenCookie.getValue();
             username = jwtService.extractUsername(token);
         }
 

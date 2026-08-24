@@ -17,10 +17,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JWTService jwtService;
     private final UserRepository userRepository;
+    private final AuthCookieService authCookieService;
 
-    public OAuth2LoginSuccessHandler(JWTService jwtService, UserRepository userRepository) {
+    public OAuth2LoginSuccessHandler(JWTService jwtService, UserRepository userRepository, AuthCookieService authCookieService) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.authCookieService = authCookieService;
     }
 
     @Override
@@ -56,6 +58,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         user = userRepository.save(user);
         String token = jwtService.generateToken(user.getEmail());
-        response.sendRedirect("http://localhost:3000/oauth2/redirect?token=" + token);
+        response.addHeader("Set-Cookie", authCookieService.createJwtCookie(token).toString());
+        response.sendRedirect("http://localhost:5173/");
     }
 }

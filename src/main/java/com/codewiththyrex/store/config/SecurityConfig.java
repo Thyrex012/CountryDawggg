@@ -44,7 +44,7 @@ public class SecurityConfig {
                 //Cross-origin resource sharing is set to use the rules we set
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/oauth2/**", "/login/**").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/logout", "/oauth2/**", "/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2.successHandler(oAuth2LoginSuccessHandler))

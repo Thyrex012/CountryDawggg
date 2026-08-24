@@ -5,8 +5,11 @@ import com.codewiththyrex.store.dto.LoginRequest;
 import com.codewiththyrex.store.dto.RegisterRequest;
 import com.codewiththyrex.store.entity.User;
 import com.codewiththyrex.store.security.JWTService;
+import com.codewiththyrex.store.security.AuthCookieService;
 import com.codewiththyrex.store.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,11 +26,14 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
+    private final AuthCookieService authCookieService;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService,
+                          AuthCookieService authCookieService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.authCookieService = authCookieService;
     }
 
     @PostMapping("/register")
@@ -42,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email(), request.password())
@@ -54,14 +60,19 @@ public class UserController {
         User user = (User) userService.loadUserByUsername(request.email());
         String jwtToken = jwtService.generateToken(request.email());
 
-        return new AuthResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getRole().name(),
-                jwtToken
-        );
+        AuthResponse response = new AuthResponse(
+                user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getRole().name());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, authCookieService.createJwtCookie(jwtToken).toString())
+                .body(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, authCookieService.clearJwtCookie().toString())
+                .build();
     }
 
     @GetMapping("/users")
