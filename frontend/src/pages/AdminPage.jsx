@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import AdminPageSidebar from "../components/adminpage/AdminPageSidebar.jsx";
 
 function AdminPage() {
 
@@ -19,6 +20,7 @@ function AdminPage() {
 
     return (
         <>
+            <AdminPageSidebar></AdminPageSidebar>
             <p>Hello world</p>
             <button onClick={handleLogout}>logout</button>
         </>
