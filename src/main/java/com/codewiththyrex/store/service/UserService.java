@@ -23,34 +23,6 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User handleGoogleLogin(String googleId, String email, String firstName, String lastName){
-        // First: has this Google account logged in before
-        Optional<User> byGoogleId = userRepository.findByGoogleId(googleId);
-        if (byGoogleId.isPresent()) {
-            return byGoogleId.get();
-        }
-
-        //Second: Link Google account to local account
-        Optional<User> byEmail = userRepository.findByEmail(email);
-        if (byEmail.isPresent()){
-            User existing = byEmail.get();
-            existing.setGoogleId(googleId);
-            existing.setAuthProvider(AuthProvider.BOTH);
-            existing.setEmailVerified(true); // Google verified it, trust it now
-            return userRepository.save(existing);
-        }
-
-        //Third: brand-new user signing up via Google for the first time
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setGoogleId(googleId);
-        newUser.setAuthProvider(AuthProvider.GOOGLE);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmailVerified(true);
-        return userRepository.save(newUser);
-    }
-
     public User registerLocalUser(String email, String rawPassword, String firstName, String lastName, String phoneNumber) {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("An account with this email already exists");
