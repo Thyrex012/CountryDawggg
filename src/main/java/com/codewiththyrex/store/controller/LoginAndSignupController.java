@@ -21,15 +21,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-public class UserController {
+public class LoginAndSignupController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final AuthCookieService authCookieService;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService,
-                          AuthCookieService authCookieService) {
+    public LoginAndSignupController(UserService userService, AuthenticationManager authenticationManager, JWTService jwtService,
+                                    AuthCookieService authCookieService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;

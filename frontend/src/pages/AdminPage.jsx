@@ -21,8 +21,6 @@ function AdminPage() {
     return (
         <>
             <AdminPageSidebar></AdminPageSidebar>
-            <p>Hello world</p>
-            <button onClick={handleLogout}>logout</button>
         </>
     );
 }

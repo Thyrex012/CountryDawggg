@@ -13,7 +13,7 @@ function LoginAndSignup() {
 
         {/* Mobile-only: full-bleed background image */}
         <img
-            className="absolute inset-0 w-full h-full object-fill -z-10 md:hidden"
+            className="absolute inset-0 w-full h-full -z-10 md:hidden"
             src={countryDawgggLogin}
             alt="Country Dawggg login background"
         />
