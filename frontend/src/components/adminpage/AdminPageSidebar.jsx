@@ -13,7 +13,7 @@ function AdminPageSidebar(){
 
     const handleLogout = async () => {
         try {
-            await fetch("http://localhost:8080/api/auth/logout", {
+            await fetch("/api/auth/logout", {
                 method: "POST",
                 credentials: "include", // required so the cookie is sent + the clearing cookie is accepted
             });
