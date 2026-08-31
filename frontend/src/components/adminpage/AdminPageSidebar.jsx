@@ -24,7 +24,7 @@ function AdminPageSidebar(){
         }
     };
 
-    return <nav className="flex flex-col h-screen w-56 bg-red-600">
+    return <nav className="flex flex-col h-screen w-56 bg-red-600 sticky top-0">
         <img className="" src={countryDawgggLogo}></img>
         <div className="flex flex-col gap-2 justify-items-center mt-3 flex-1">
             <SidebarItem icon={shirtSVG} text={"products"}></SidebarItem>
