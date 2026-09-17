@@ -1,8 +1,6 @@
 package com.codewiththyrex.store.controller;
 
-import com.codewiththyrex.store.entity.Product;
-import com.codewiththyrex.store.entity.ProductStock;
-import com.codewiththyrex.store.entity.Size;
+import com.codewiththyrex.store.entity.*;
 import com.codewiththyrex.store.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +45,8 @@ public class ProductController {
                 request.name(),
                 request.description(),
                 request.price(),
-                request.sku(),
+                request.gender(),
+                request.category(),
                 request.stock()
         );
     }
@@ -89,7 +88,7 @@ public class ProductController {
 
     // --- Request body shapes (records) ---
 
-    public record CreateProductRequest(String name, String description, BigDecimal price, String sku, Map<Size, Integer> stock) {}
+    public record CreateProductRequest(String name, String description, BigDecimal price, Gender gender, ClothingCategory category, Map<Size, Integer> stock) {}
 
     public record UpdateProductRequest(String name, String description, BigDecimal price) {}
 

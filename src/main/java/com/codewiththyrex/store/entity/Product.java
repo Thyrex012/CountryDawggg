@@ -32,6 +32,14 @@ public class Product {
     @Column(unique = true)
     private String sku;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ClothingCategory category;
+
     @Column(nullable = false)
     private boolean active = true;
 
@@ -44,11 +52,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductStock> stock = new ArrayList<>();
 
-    public Product(String name, String description, BigDecimal price, String sku) {
+    public Product(String name, String description, BigDecimal price, String sku, Gender gender, ClothingCategory category) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.sku = sku;
+        this.gender = gender;
+        this.category = category;
     }
 
     public void addStock(ProductStock stock) {

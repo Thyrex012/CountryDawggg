@@ -1,5 +1,7 @@
 package com.codewiththyrex.store.repository;
 
+import com.codewiththyrex.store.entity.ClothingCategory;
+import com.codewiththyrex.store.entity.Gender;
 import com.codewiththyrex.store.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // Search products by name, case-insensitive, partial match
     List<Product> findByNameContainingIgnoreCase(String keyword);
+
+    long countByGenderAndCategory(Gender gender, ClothingCategory category);
 
     boolean existsByName(String name);
 

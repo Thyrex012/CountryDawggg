@@ -1,11 +1,10 @@
 package com.codewiththyrex.store.service;
 
-import com.codewiththyrex.store.entity.Product;
-import com.codewiththyrex.store.entity.ProductStock;
-import com.codewiththyrex.store.entity.Size;
+import com.codewiththyrex.store.entity.*;
 import com.codewiththyrex.store.exception.ProductNotFoundException;
 import com.codewiththyrex.store.repository.ProductRepository;
 import com.codewiththyrex.store.repository.ProductStockRepository;
+import com.codewiththyrex.store.util.SkuGenerator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,8 +23,14 @@ public class ProductService {
 
     // --- CREATE ---
 
-    public Product createProduct(String name, String description, BigDecimal price, String sku, Map<Size, Integer> stockBySize) {
-        Product product = new Product(name, description, price, sku);
+    public Product createProduct(String name, String description, BigDecimal price,
+                                 Gender gender, ClothingCategory category,
+                                 Map<Size, Integer> stockBySize) {
+
+        long sequence = productRepository.countByGenderAndCategory(gender, category) + 1;
+        String sku = SkuGenerator.generate(gender, category, sequence);
+
+        Product product = new Product(name, description, price, sku, gender, category);
 
         stockBySize.forEach((size, quantity) -> {
             ProductStock stock = new ProductStock();
